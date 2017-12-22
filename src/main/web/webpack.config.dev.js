@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: {
         app: [
-            './index.js'
+            './index.js',
+            './main.scss'
         ],
         vendor: [
             'react',
@@ -28,7 +29,23 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loader: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+                use: [{
+                    loader: 'style-loader',
+                }, {
+                    loader: 'css-loader',
+                }, {
+                    loader: 'postcss-loader',
+                    options: {
+                        plugins: function () {
+                            return [
+                                require('precss'),
+                                require('autoprefixer')
+                            ];
+                        }
+                    }
+                }, {
+                    loader: 'sass-loader'
+                }]
             },
             {
                 test: /\.css$/,
@@ -47,5 +64,8 @@ module.exports = {
             filename: 'index.html',
             inject: 'body'
         })
-    ]
+    ],
+    resolve: {
+        extensions: ['.js', '.jsx']
+    }
 };
