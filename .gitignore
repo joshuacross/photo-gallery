@@ -1,4 +1,5 @@
 target/
+static/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -22,3 +23,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Web ###
+node_modules/
