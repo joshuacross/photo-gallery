@@ -14,10 +14,10 @@ class Gallery extends Component {
     }
 
     componentDidMount() {
-        axios.get('/loadFileList') // Get the ids of files and then load the files one by one
+        axios.get('/fileList') // Get the ids of files and then load the files one by one
             .then((res) => {
                 res.data.forEach(el => {
-                    axios.get(`loadImage/${el}`, { responseType: "blob" })
+                    axios.get(`image/${el}`, { responseType: "blob" })
                         .then(result => {
                             this.setState({
                                 imageURLs: [...this.state.imageURLs, URL.createObjectURL(result.data)]
@@ -52,7 +52,7 @@ class Gallery extends Component {
         let data = new FormData();
         data.append('file', this.state.files[0]);
 
-        axios.post('/saveImage', data)
+        axios.post('/image', data)
     };
 
     renderImages() {
