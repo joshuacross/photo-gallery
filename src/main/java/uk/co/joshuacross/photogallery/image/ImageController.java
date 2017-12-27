@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class ImageController {
 
     @Autowired
