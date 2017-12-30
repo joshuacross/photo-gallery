@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -17,8 +18,7 @@ import java.util.Date;
 public class ImageModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @NotBlank
     private String name;
@@ -26,8 +26,8 @@ public class ImageModel {
     @NotBlank
     private String url;
 
-    @NotBlank
-    private Long size;
+    @NotNull
+    private Integer size;
 
     @NotBlank
     private String contentType;
@@ -42,11 +42,11 @@ public class ImageModel {
     @LastModifiedDate
     private Date updatedAt;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,11 +66,11 @@ public class ImageModel {
         this.url = url;
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
