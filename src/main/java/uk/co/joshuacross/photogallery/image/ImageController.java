@@ -19,20 +19,6 @@ public class ImageController {
     @Autowired
     ImageRepository imageRepository;
 
-    @PostMapping("/image")
-    public ImageModel postImage(@RequestParam("file") MultipartFile file) throws IOException {
-        Map uploadResult = Singleton.getCloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-
-        ImageModel image = new ImageModel();
-        image.setId((String) uploadResult.get("public_id"));
-        image.setName((String) uploadResult.get("original_filename"));
-        image.setUrl((String) uploadResult.get("url"));
-        image.setContentType((String) uploadResult.get("resource_type"));
-        image.setSize((Integer) uploadResult.get("bytes"));
-
-        return imageRepository.save(image);
-    }
-
     @GetMapping("/image")
     public List<ImageModel> getImages() {
         return imageRepository.findAll();
@@ -47,6 +33,20 @@ public class ImageController {
         }
 
         return ResponseEntity.ok().body(image);
+    }
+
+    @PostMapping("/image")
+    public ImageModel postImage(@RequestParam("file") MultipartFile file) throws IOException {
+        Map uploadResult = Singleton.getCloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+
+        ImageModel image = new ImageModel();
+        image.setId((String) uploadResult.get("public_id"));
+        image.setName((String) uploadResult.get("original_filename"));
+        image.setUrl((String) uploadResult.get("url"));
+        image.setContentType((String) uploadResult.get("resource_type"));
+        image.setSize((Integer) uploadResult.get("bytes"));
+
+        return imageRepository.save(image);
     }
 
     @DeleteMapping("/image/{id}")
