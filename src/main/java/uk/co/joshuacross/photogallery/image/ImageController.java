@@ -1,65 +1,50 @@
 package uk.co.joshuacross.photogallery.image;
 
-import com.cloudinary.Singleton;
-import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/")
 public class ImageController {
 
-    @Autowired
-    ImageRepository imageRepository;
-
-    @GetMapping("/image")
-    public List<ImageModel> getImages() {
-        return imageRepository.findAll();
+    @Bean
+    public ImageService imageService() {
+        return new CloudinaryImageService();
     }
 
-    @GetMapping("/image/{id}")
-    public ResponseEntity<ImageModel> getImage(@PathVariable(value = "id") String id) {
-        ImageModel image = imageRepository.findOne(id);
+    @Autowired
+    private ImageService imageService;
 
-        if (image == null) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/image")
+    public ResponseEntity<List<ImageModel>> getAllImages() {
+        return response(imageService.getAllImages());
+    }
 
-        return ResponseEntity.ok().body(image);
+    @GetMapping("/image/{ids}")
+    public ResponseEntity<List<ImageModel>> getImages(@PathVariable(value = "ids") List<String> ids) {
+        return response(imageService.getImages(ids));
     }
 
     @PostMapping("/image")
-    public ImageModel postImage(@RequestParam("file") MultipartFile file) throws IOException {
-        Map uploadResult = Singleton.getCloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-
-        ImageModel image = new ImageModel();
-        image.setId((String) uploadResult.get("public_id"));
-        image.setName((String) uploadResult.get("original_filename"));
-        image.setUrl((String) uploadResult.get("url"));
-        image.setContentType((String) uploadResult.get("resource_type"));
-        image.setSize((Integer) uploadResult.get("bytes"));
-
-        return imageRepository.save(image);
+    public ResponseEntity<List<ImageModel>> postImage(@RequestParam("file") List<MultipartFile> files) {
+        return response(imageService.saveImages(files));
     }
 
-    @DeleteMapping("/image/{id}")
-    public ResponseEntity<ImageModel> deleteImage(@PathVariable(value = "id") String id) throws Exception {
-        ImageModel image = imageRepository.findOne(id);
+    @DeleteMapping("/image/{ids}")
+    public ResponseEntity<List<ImageModel>> deleteImage(@PathVariable(value = "ids") List<String> ids) throws Exception {
+        return response(imageService.deleteImages(ids));
+    }
 
-        if (image == null) {
+    public ResponseEntity<List<ImageModel>> response(List<ImageModel> images) {
+        if (images == null || images.size() <= 0) {
             return ResponseEntity.notFound().build();
         }
 
-        imageRepository.delete(image);
-        Singleton.getCloudinary().api().deleteResources(Arrays.asList(image.getId()), ObjectUtils.emptyMap());
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(images);
     }
 }
