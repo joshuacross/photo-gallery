@@ -14,7 +14,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, '../resources/static/')
+        path: path.join(__dirname, '../../../target/classes/static/')
     },
     devtool: 'eval-source-map',
     module: {
