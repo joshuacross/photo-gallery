@@ -14,19 +14,12 @@ class Gallery extends Component {
     }
 
     componentDidMount() {
-        axios.get('/fileList') // Get the ids of files and then load the files one by one
-            .then((res) => {
-                res.data.forEach(el => {
-                    axios.get(`image/${el}`, { responseType: "blob" })
-                        .then(result => {
-                            this.setState({
-                                imageURLs: [...this.state.imageURLs, URL.createObjectURL(result.data)]
-                            });
-                        })
-                        .catch(err => console.log(err));
-                })
-            })
-            .catch(err => console.log(err)) // Need to handle this properly
+        fetch('/image')
+            .then((res) => res.json())
+            .then((data) =>
+                this.setState({
+                    imageURLs: [...this.state.imageURLs, ...data.map((image) => image.url)]
+            }))
     }
 
     onBrowse = (event) => {
@@ -64,7 +57,7 @@ class Gallery extends Component {
             <div>
                 <nav className="navbar navbar-expand-md navbar-dark nav-bg fixed-top">
                     <FileInput fileNames={this.state.fileNames} onBrowse={this.onBrowse} />
-                    <button type="button" className="btn btn-primary btn-upload" onClick={this.onUpload}>Upload</button>
+                    <button type="button" className="btn btn-upload" onClick={this.onUpload}>Upload</button>
                 </nav>
                 <main className='container-fluid gallery-container'>
                     <div className='row'>
