@@ -35,17 +35,20 @@ class Gallery extends Component {
     };
 
     onUpload = () => {
-        const uploadedImages = this.state.files.map(file => URL.createObjectURL(file));
+        const data = new FormData();
+        this.state.files.forEach((file) => data.append('file', file));
 
-        this.setState({
-            fileNames: [],
-            imageURLs: [...this.state.imageURLs, ...uploadedImages]
-        });
-
-        let data = new FormData();
-        data.append('file', this.state.files[0]);
-
-        axios.post('/image', data)
+        fetch('/image', {
+            method: 'POST',
+            body: data
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                this.setState({
+                    fileNames: [],
+                    imageURLs: [...this.state.imageURLs, ...data.map((metadata) => metadata.url)]
+                });
+            });
     };
 
     renderImages() {
