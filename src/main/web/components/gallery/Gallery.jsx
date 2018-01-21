@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Image from '../image/Image';
 import FileInput from '../file-input/FileInput';
 import './gallery.scss';
-import axios from 'axios';
 
 class Gallery extends Component {
     constructor(props) {
