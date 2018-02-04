@@ -13,49 +13,41 @@ import java.util.Date;
 @Entity
 @Table(name = "images")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
-        allowGetters = true)
+@JsonIgnoreProperties(allowGetters = true, ignoreUnknown = true)
 public class ImageModel {
 
     @Id
-    private String id;
+    private String publicId;
 
     @NotBlank
-    private String name;
+    private String originalFilename;
 
     @NotBlank
     private String url;
 
     @NotNull
-    private Integer size;
+    private Integer bytes;
 
     @NotBlank
-    private String contentType;
+    private String resourceType;
 
-    @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
+    @NotNull
     private Date createdAt;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @LastModifiedDate
-    private Date updatedAt;
-
-    public String getId() {
-        return id;
+    public String getPublicId() {
+        return publicId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPublicId(String publicId) {
+        this.publicId = publicId;
     }
 
-    public String getName() {
-        return name;
+    public String getOriginalFilename() {
+        return originalFilename;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
     }
 
     public String getUrl() {
@@ -66,20 +58,20 @@ public class ImageModel {
         this.url = url;
     }
 
-    public Integer getSize() {
-        return size;
+    public Integer getBytes() {
+        return bytes;
     }
 
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setBytes(Integer bytes) {
+        this.bytes = bytes;
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getResourceType() {
+        return resourceType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
     }
 
     public Date getCreatedAt() {
@@ -88,13 +80,5 @@ public class ImageModel {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

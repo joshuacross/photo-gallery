@@ -36,9 +36,9 @@ public class CloudinaryImageServiceTest {
     @Before
     public void setup() {
         ImageModel image = new ImageModel();
-        image.setId("xphkdwc0kiar914yfvzq");
+        image.setPublicId("xphkdwc0kiar914yfvzq");
 
-        Mockito.when(imageRepository.findAll(Arrays.asList(image.getId())))
+        Mockito.when(imageRepository.findAll(Arrays.asList(image.getPublicId())))
                 .thenReturn(Arrays.asList(image));
     }
 
@@ -47,7 +47,7 @@ public class CloudinaryImageServiceTest {
         List<String> id = Arrays.asList("xphkdwc0kiar914yfvzq");
         List<ImageModel> image = imageService.getImages(id);
 
-        assertThat(image.get(0).getId())
+        assertThat(image.get(0).getPublicId())
                 .isEqualTo(id.get(0));
     }
 }

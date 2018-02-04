@@ -2,6 +2,8 @@ package uk.co.joshuacross.photogallery.image;
 
 import com.cloudinary.Singleton;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,18 +31,13 @@ public class CloudinaryImageService implements ImageService {
     @Override
     public List<ImageModel> saveImages(List<MultipartFile> files) {
         List<ImageModel> images = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper(); // TODO: cache this somewhere
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
         files.forEach((file -> {
             try {
                 Map uploadResult = Singleton.getCloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-
-                ImageModel image = new ImageModel();
-                image.setId((String) uploadResult.get("public_id"));
-                image.setName((String) uploadResult.get("original_filename"));
-                image.setUrl((String) uploadResult.get("url"));
-                image.setContentType((String) uploadResult.get("resource_type"));
-                image.setSize((Integer) uploadResult.get("bytes"));
-
+                ImageModel image = mapper.convertValue(uploadResult, ImageModel.class);
                 images.add(image);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,7 +50,7 @@ public class CloudinaryImageService implements ImageService {
     @Override
     public List<ImageModel> deleteImages(List<String> ids) {
         List<ImageModel> images = imageRepository.findAll(ids);
-        List<String> imagesToDelete = images.stream().map(ImageModel::getId).collect(Collectors.toList());
+        List<String> imagesToDelete = images.stream().map(ImageModel::getPublicId).collect(Collectors.toList());
 
         try {
             if (images.size() > 0) {
