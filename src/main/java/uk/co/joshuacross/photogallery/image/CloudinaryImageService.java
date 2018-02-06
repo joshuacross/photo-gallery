@@ -31,7 +31,7 @@ public class CloudinaryImageService implements ImageService {
     @Override
     public List<ImageModel> saveImages(List<MultipartFile> files) {
         List<ImageModel> images = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper(); // TODO: cache this somewhere
+        ObjectMapper mapper = new ObjectMapper(); // TODO: replace with config
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
         files.forEach((file -> {
